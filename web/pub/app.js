@@ -371,12 +371,12 @@
 }).call(this);
 (function() {
 
-  console.log('welcome');
+  console.log('home');
 
 }).call(this);
 (function() {
 
-  console.log('home');
+  console.log('welcome');
 
 }).call(this);
 (function() {
