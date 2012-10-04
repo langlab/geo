@@ -264,7 +264,7 @@
     BB = glo.BB;
     Model = (function() {
 
-      Model.prototype.name = 'Lab';
+      Model.prototype.name = 'LangLab';
 
       function Model() {
         var _this = this;
@@ -367,11 +367,6 @@
 (function() {
 
   console.log('ui');
-
-}).call(this);
-(function() {
-
-  console.log('home');
 
 }).call(this);
 (function() {
@@ -837,5 +832,10 @@
     });
     return Views = {};
   });
+
+}).call(this);
+(function() {
+
+  console.log('home');
 
 }).call(this);
