@@ -2,7 +2,7 @@
 require 'flour'
 fs = require 'fs' 
 EventEmitter = require('events').EventEmitter
-{spawn} = require 'child_process'
+{spawn,exec} = require 'child_process'
 async = require 'async'
 _ = require 'underscore'
 util = require 'util'
@@ -34,10 +34,10 @@ assets = (cb)->
     spawn 'cp', ["./web/src/#{module}/assets/*",'./web/pub/assets/']
     spawn.on 'exit', cb()
 
-deploy = ->
-  sync = spawn 'rsync', ['--delete','-avz',"#{__dirname}",'admin@langlab.org:~/dev/']
-  sync.stdout.on 'data', (data)-> console.log "rsync: #{data}"
-  sync.stderr.on 'data', (data)-> console.log "rsync: #{data}"
+deploy = (msg = "small changes", cb)->
+  dep = exec "git add . && git commit -a -m '#{msg}' && git push"
+  dep.stdout.on 'data', (data)-> console.log "git: #{data}"
+  dep.stderr.on 'data', (data)-> console.log "git: #{data}"
 
 
 task 'build:vendor', "bundle and minify the vendor javascript", vendor
@@ -55,7 +55,7 @@ task "dev", ->
 
   watch './geo.coffee', -> deploy
   watch './web/web.coffee', -> deploy
-  watch './api', -> deploy
+  watch './api/', -> deploy
 
 
   
