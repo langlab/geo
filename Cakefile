@@ -51,7 +51,7 @@ task 'deploy', "deploy to server", deploy
 
 task "dev", ->
 
-  vendor style app deploy
+  vendor style app deploy 'hi'
 
   watch './web/src', -> vendor style app deploy
 
