@@ -30,46 +30,24 @@ api = (server)->
   sio.configure ->
 
     sio.set 'authorization', (hs,cb)->
-      hs.role = 'none'
+      console.log 'handshake',hs
       cookies = hs.headers.cookie?.split(';')
 
-      ssidStr = _.find cookies, (i)-> /sessionId/.test(i)
-      ssid = (unescape ssidStr?.split('=')[1])[2..25]
-      console.log 'ssid:',ssid
+      if cookies
+        ssidStr = _.find cookies, (i)-> /sessionId/.test(i)
+        ssid = (unescape ssidStr?.split('=')[1])[2..25]
 
-      studentKeyStr = _.find cookies, (i)-> /studentKey/.test(i)
-      studentKey = if studentKeyStr? then unescape studentKeyStr?.split('=')[1] else null
 
-      if studentKey?
-        console.log 'studentKey: ',studentKey
-        cb null, true
-
-        ###
-        red.get "lingualabio:studentAuth:#{key}", (err, student)->
-          if student
-            hs.studentId = student._id
-            hs.role = 'student'
-          else
-            hs.role = 'none'
-          cb null, true
-
-        ###
-      
-      else
-
-        console.log 'getting session...'
-        # find the session in redis
         red.get "sess:#{ssid}", (err, sessStr)->
           console.log "session:", JSON.parse sessStr, err
           if sessStr
             hs.sess = JSON.parse sessStr
             hs.teacherId = hs.userId = hs.sess?.auth?.userId
-            if hs.teacherId 
-              hs.role = 'teacher'
-            else
-              hs.role = 'none'
 
           cb null, true
+      
+      else
+        cb null, true
 
 
 

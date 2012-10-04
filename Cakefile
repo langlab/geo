@@ -34,8 +34,8 @@ assets = (cb)->
     spawn 'cp', ["./web/src/#{module}/assets/*",'./web/pub/assets/']
     spawn.on 'exit', cb()
 
-deploy = (msg)->
-  msg = "small changes"
+commit = (msg)->
+  msg ?= "small changes"
   dep = exec "git add . && git commit -a -m '#{msg}' && git push"
   dep.stdout.on 'data', (data)-> console.log "git: #{data}"
   dep.stderr.on 'data', (data)-> console.log "git: #{data}"
@@ -46,19 +46,19 @@ task 'build:vendor', "bundle and minify the vendor javascript", vendor
 task 'build:style', "compile all css into one file", style
 task 'build:app', "bundle and minify all app module javascript into one file", app
 task 'build:assets', "copy all module images and fonts over to the public directory", assets
-task 'deploy', "deploy to server", deploy
+task 'commit', "commit changes and push", commit
 
 
 
 task "dev", ->
 
-  vendor style app deploy
+  vendor style app commit
 
-  watch './web/src', -> vendor style app deploy
+  watch './web/src', -> vendor style app commit
 
-  watch './geo.coffee', -> deploy
-  watch './web/web.coffee', -> deploy
-  watch './api/', -> deploy
+  watch './geo.coffee', -> commit
+  watch './web/web.coffee', -> commit
+  watch './api/', -> commit
 
 
   

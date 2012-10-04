@@ -25,9 +25,6 @@ module "App", (exports, glo)->
         glo.Backbone.history.start() unless glo.Backbone.History.started
 
         
-
-      
-
     socketConnect: ->
       @connection = window.sock = window.io.connect "/"
       #@connectionView = new App.Connection.Views.Main { model: @connection }
