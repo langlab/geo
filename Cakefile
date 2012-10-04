@@ -39,6 +39,7 @@ deploy = (msg)->
   dep = exec "git add . && git commit -a -m '#{msg}' && git push"
   dep.stdout.on 'data', (data)-> console.log "git: #{data}"
   dep.stderr.on 'data', (data)-> console.log "git: #{data}"
+  dep.on 'exit', -> console.log 'done.'
 
 
 task 'build:vendor', "bundle and minify the vendor javascript", vendor
@@ -56,7 +57,7 @@ task "dev", ->
   watch './web/src', -> vendor style app deploy
 
   watch './geo.coffee', -> deploy
-  watch './web/web.coffee', -> deploy
+  watch './web/web.coffee', -> deploy 'small changes'
   watch './api/', -> deploy
 
 

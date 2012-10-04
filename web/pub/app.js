@@ -366,12 +366,12 @@
 }).call(this);
 (function() {
 
-  console.log('ui');
+  console.log('welcome');
 
 }).call(this);
 (function() {
 
-  console.log('welcome');
+  console.log('ui');
 
 }).call(this);
 (function() {
