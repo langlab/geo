@@ -43,7 +43,7 @@ everyauth.dailycred
     User.dcAuth dcUserMetadata, (err,resp)->
       #console.log util.inspect resp
       if err
-        console.log 'promise failed',err
+        console.log 'promise failed!',err
         promise.fail err
         return
       else
