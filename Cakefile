@@ -34,7 +34,8 @@ assets = (cb)->
     spawn 'cp', ["./web/src/#{module}/assets/*",'./web/pub/assets/']
     spawn.on 'exit', cb()
 
-deploy = (msg = "small changes", cb)->
+deploy = (msg, cb)->
+  msg ?= "small changes"
   dep = exec "git add . && git commit -a -m '#{msg}' && git push"
   dep.stdout.on 'data', (data)-> console.log "git: #{data}"
   dep.stderr.on 'data', (data)-> console.log "git: #{data}"
@@ -49,6 +50,7 @@ task 'deploy', "deploy to server", deploy
 
 
 task "dev", ->
+
   vendor style app deploy
 
   watch './web/src', -> vendor style app deploy
