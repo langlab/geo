@@ -4,7 +4,7 @@ module "App", (exports, glo)->
   BB = glo.BB
   
   class Model
-    name: 'LangLab'
+    name: 'Lab'
 
     constructor: ->
 

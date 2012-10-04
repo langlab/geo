@@ -35,7 +35,7 @@ assets = (cb)->
     spawn.on 'exit', cb()
 
 deploy = (msg)->
-  msg ?= "small changes"
+  msg = "small changes"
   dep = exec "git add . && git commit -a -m '#{msg}' && git push"
   dep.stdout.on 'data', (data)-> console.log "git: #{data}"
   dep.stderr.on 'data', (data)-> console.log "git: #{data}"
