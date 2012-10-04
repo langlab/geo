@@ -28,7 +28,7 @@ everyauth.twitter
         promise.fail err
         return
       else
-        console.log 'fulfilling promise:'
+        console.log 'fulfilling promise'
         promise.fulfill resp
 
     return promise
