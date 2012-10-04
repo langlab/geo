@@ -28,7 +28,7 @@ module.exports =
   S3:
     KEY: 'AKIAIUJTVW7ZLSILOJRA'
     SECRET: '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'
-    MEDIA_BUCKET: 'lingualabio-media'
+    MEDIA_BUCKET: 'geolab-media'
     URL_ROOT: 'https://s3.amazonaws.com/'
 
   ZENCODER:

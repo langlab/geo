@@ -10,21 +10,21 @@ module.exports =
 
     api: (data, cb)->
       {handshake, method, model, options} = data
-      access = @access handshake
-      
-      if method in (access?.allowedFunctions ? [])
-        data.access = access
-        if (id = model?._id) 
-          # if a model is specified, find it and call the method on it
-          @findById id, (err, obj)->
-            if err then cb err, null
-            else obj[method] data, cb
-        else
-          # otherwise call a static/class method
-          @[method] data, cb
-
+    
+      if (id = model?._id) and method isnt 'read' 
+        # if a model is specified, find it and call the method on it
+        @findById id, (err, obj)=>
+          if err then cb err, null
+          else 
+            obj[method] data, cb
+            obj.on 'event', (data)=>
+              @emit 'event', data
       else
-        cb { message: 'unauthorized' }, null
+        # otherwise call a static/class method
+        if @[method]?
+          @[method] data, cb
+        else cb { message: 'invalid method' }, null
+
 
 
     echo: (data, cb)->

@@ -13,6 +13,7 @@ UserSchema = new Schema {
   name: String
   role: String
   twitter: {}
+  dailyCred: {}
   twitterId: String
 }
 
@@ -62,6 +63,19 @@ _.extend UserSchema.statics, {
         newUser = new @
         newUser.twitter = twitter
         newUser.twitterId = twitter.id
+        newUser.save (err)->
+          cb err, newUser
+
+  dcAuth: (dcUserMetadata, cb)->
+    @findOne { 'dcUserMetadata.id': dcUserMetadata.id }, (err, user)=>
+
+      if user
+        user.dailyCred = dcUserMetadata
+        user.save (err)->
+          cb err, user
+      else
+        newUser = new @
+        newUser.dailyCred = dcUserMetadata
         newUser.save (err)->
           cb err, newUser
 

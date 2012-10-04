@@ -35,6 +35,24 @@ everyauth.twitter
 
   ).redirectPath('/')
 
+everyauth.dailycred
+  .appId('b1c1e826-0e69-4fc5-b8c6-1205f6b23118')
+  .findOrCreateUser( (session, accessToken, accessTokenExtra, dcUserMetadata)->
+    promise = @Promise()
+
+    User.dcAuth dcUserMetadata, (err,resp)->
+      #console.log util.inspect resp
+      if err
+        promise.fail err
+        return
+      else
+        console.log 'fulfilling promise'
+        promise.fulfill resp
+
+    return promise
+
+  ).redirectPath '/'
+
 
 app.configure ->
   app.use express.cookieParser()
@@ -49,17 +67,25 @@ app.configure ->
   app.use express.bodyParser()
 
 
-app.get '/:path?', (req,res)->
-  {path} = req.params
-  path ?= 'index.html'
-  res.sendfile "#{__dirname}/pub/#{path}"
-
 app.get '/user', (req,res)->
   res.json {
     user: req.user
     session: req.session
     ssId: res.session?.id
   }
+  
+
+serveFile = (path,res)->
+  res.sendfile "#{__dirname}/pub/#{path}"
+
+app.get '/:path?', (req,res)->
+  {path} = req.params
+  path ?= 'index.html'
+  serveFile path, res
+
+app.get '/assets/:path', (req,res)->
+  {path} = req.params
+  serveFile "assets/#{path}", res
 
 
 module.exports = app

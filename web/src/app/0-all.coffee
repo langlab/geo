@@ -22,6 +22,9 @@ window.module = (target, name, block) ->
   target = target[item] or= {} for item in name.split '.'
   block target, top
 
+window.filepicker?.setKey('Ag4e6fVtyRNWgXY2t3Dccz')
+# Stripe?.setPublishableKey('pk_04LnDZEuRgae5hqjKjFaWjFyTYFgs')
+
 
 
 

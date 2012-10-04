@@ -1,6 +1,20 @@
 
 module "BB", (exports, glo)->
 
+  sync = (method,model,options)->
+    console.log 'emitting sync: ',@syncName, method, model, options
+    window.sock.emit 'api', @syncName, {
+      method: method
+      model: model
+      options: options
+    }, (err, response)->
+      console.log err,response
+      if err then options.error response
+      else options.success response
+
+
+
+
   class Model extends Backbone.Model
     io: glo.io
     idAttribute: '_id'
@@ -8,6 +22,15 @@ module "BB", (exports, glo)->
     initialize: (@options)->
       _.extend @, @options
       @
+
+    sync: sync
+
+    api: (method, data, cb)->
+      window.sock.emit 'api', @syncName, {
+        method: method
+        model: @toJSON()
+        options: data
+      }, cb
 
 
   class Collection extends Backbone.Collection
@@ -19,6 +42,15 @@ module "BB", (exports, glo)->
 
     getByIds: (ids)->
       @filter (m)-> m.id in ids
+
+    sync: sync
+
+    api: (method, data, cb)->
+      window.sock.emit 'api', @syncName, {
+        method: method
+        model: null
+        options: data
+      }, cb
 
 
 
@@ -75,6 +107,10 @@ module "BB", (exports, glo)->
     initialize: (@options)->
       _.extend @, @options
       @
+
+    clearViews: (exceptFor)->
+      if not _.isArray exceptFor then exceptFor = [exceptFor]
+      view.close() for key,view of @views when not (key in exceptFor)
 
 
   _.extend exports, {

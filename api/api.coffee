@@ -14,6 +14,7 @@ red = redis.createClient()
 
 services =
   user: require './db/user'
+  media: require './db/media'
 
 
 api = (server)->
