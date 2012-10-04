@@ -52,12 +52,12 @@ task 'deploy', "deploy to server", deploy
 
 task "dev", ->
 
-  vendor style app deploy 'small changes'
+  vendor style app deploy
 
   watch './web/src', -> vendor style app deploy
 
   watch './geo.coffee', -> deploy
-  watch './web/web.coffee', -> deploy 'small changes'
+  watch './web/web.coffee', -> deploy
   watch './api/', -> deploy
 
 
