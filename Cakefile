@@ -46,7 +46,10 @@ task 'build:vendor', "bundle and minify the vendor javascript", vendor
 task 'build:style', "compile all css into one file", style
 task 'build:app', "bundle and minify all app module javascript into one file", app
 task 'build:assets', "copy all module images and fonts over to the public directory", assets
-task 'commit', "commit changes and push", commit
+
+option '-m', '--message [MESSAGE]', 'commit and push with message'
+task 'commit', "commit changes and push", (options)-> 
+  commit options.message
 
 
 
