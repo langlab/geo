@@ -65,6 +65,7 @@ api = (server)->
       { method, model, options, handshake } = data
       api = services[schema].api data, cb
 
+
     client.on 'handshake', (cb)->
       console.log 'handshake'
       cb null, client.handshake

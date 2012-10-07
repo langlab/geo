@@ -1,6 +1,5 @@
 (function() {
-  var _ref,
-    _this = this,
+  var _this = this,
     __slice = [].slice;
 
   window.w = window;
@@ -39,9 +38,11 @@
     return block(target, top);
   };
 
-  if ((_ref = window.filepicker) != null) {
-    _ref.setKey('Ag4e6fVtyRNWgXY2t3Dccz');
-  }
+  DC.init({
+    clientId: CFG.DC.KEY,
+    callback: 'http://108.174.99.32/login',
+    oauth: true
+  });
 
 }).call(this);
 
@@ -256,6 +257,11 @@
 }).call(this);
 
 (function() {
+
+  console.log('ui');
+
+}).call(this);
+(function() {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -264,15 +270,21 @@
     BB = glo.BB;
     Model = (function() {
 
-      Model.prototype.name = 'LangLab';
+      Model.prototype.name = 'Lab';
 
       function Model() {
-        var _this = this;
+        var _ref,
+          _this = this;
+        if ((_ref = window.filepicker) != null) {
+          _ref.setKey(w.CFG.FILEPICKER.KEY);
+        }
         this.data = {
+          user: new App.User.Model,
           media: new App.Media.Collection
         };
         this.views = {
-          home: new Home
+          home: new Home,
+          welcome: new App.Welcome.Views.Main
         };
         this.routers = {
           main: new Router({
@@ -280,6 +292,10 @@
             views: this.views
           }),
           media: new App.Media.Router({
+            data: this.data,
+            views: this.views
+          }),
+          welcome: new App.Welcome.Router({
             data: this.data,
             views: this.views
           })
@@ -313,7 +329,11 @@
       };
 
       Router.prototype.home = function() {
-        return this.views.home.render().open();
+        if (this.data.user.isLoggedIn()) {
+          return this.views.home.render().open();
+        } else {
+          return this.views.welcome.render().open();
+        }
       };
 
       return Router;
@@ -354,6 +374,7 @@
     })(BB.View);
     return _.extend(exports, {
       Model: Model,
+      User: User,
       Router: Router,
       Views: Views
     });
@@ -364,29 +385,130 @@
   });
 
 }).call(this);
-(function() {
 
-  console.log('ui');
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module("App.User", function(exports, glo) {
+    var User;
+    User = (function(_super) {
+
+      __extends(User, _super);
+
+      function User() {
+        return User.__super__.constructor.apply(this, arguments);
+      }
+
+      User.prototype.isLoggedIn = function() {
+        return false;
+      };
+
+      return User;
+
+    })(BB.Model);
+    return _.extend(exports, {
+      Model: Model
+    });
+  });
+
+}).call(this);
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module("App.Welcome", function(exports, glo) {
+    var Model, Router;
+    Model = (function(_super) {
+
+      __extends(Model, _super);
+
+      function Model() {
+        return Model.__super__.constructor.apply(this, arguments);
+      }
+
+      return Model;
+
+    })(BB.Model);
+    Views.Main = (function(_super) {
+
+      __extends(Main, _super);
+
+      function Main() {
+        return Main.__super__.constructor.apply(this, arguments);
+      }
+
+      Main.prototype.tagName = 'div';
+
+      Main.prototype.className = 'welcome';
+
+      Main.prototype.template = function() {
+        h3("lingualab");
+        return ul({
+          "class": 'button-group'
+        }, function() {
+          li(function() {
+            return a({
+              href: '#login',
+              "class": 'small button'
+            }, "Sign in");
+          });
+          return li(function() {
+            return button({
+              "class": 'small success button'
+            }, "Sign up");
+          });
+        });
+      };
+
+      return Main;
+
+    })(BB.View);
+    Router = (function(_super) {
+
+      __extends(Router, _super);
+
+      function Router() {
+        return Router.__super__.constructor.apply(this, arguments);
+      }
+
+      Router.prototype.initialize = function(options) {
+        this.options = options;
+        _.extend(this, this.options);
+        this.views.signin = new App.User.Views.Signin({
+          user: this.data.user
+        });
+        return this.views.signin.render();
+      };
+
+      Router.prototype.routes = {
+        'login': 'login'
+      };
+
+      Router.prototype.login = function() {
+        return this.views.signin.reveal();
+      };
+
+      return Router;
+
+    })(BB.Router);
+    return _.extend(exports, {
+      Model: Model,
+      Views: Views,
+      Router: Router
+    });
+  });
 
 }).call(this);
 (function() {
 
-  console.log('welcome');
+  console.log('home');
 
 }).call(this);
 (function() {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-  window.CFG = {
-    S3: {
-      KEY: 'AKIAIUJTVW7ZLSILOJRA',
-      SECRET: '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',
-      MEDIA_BUCKET: 'geolab-media',
-      URL_ROOT: 'https://s3.amazonaws.com/'
-    }
-  };
 
   module("App.Media", function(exports, glo) {
     var BB, Collection, Model, Router, Views;
@@ -508,7 +630,10 @@
       Router.prototype.initialize = function(options) {
         this.options = options;
         _.extend(this, this.options);
-        return this.data.media = new Collection;
+        this.data.media = new Collection;
+        return this.views.list = new Views.List({
+          collection: this.data.media
+        });
       };
 
       Router.prototype.routes = {
@@ -519,9 +644,6 @@
       Router.prototype.list = function() {
         var _this = this;
         this.clearViews();
-        this.views.list = new Views.List({
-          collection: this.data.media
-        });
         return this.data.media.fetch({
           success: function() {
             return _this.views.list.open();
@@ -663,10 +785,10 @@
 
       List.prototype.template = function() {
         div({
-          "class": 'btn-group'
+          "class": 'button-group'
         }, function() {
           return button({
-            "class": 'btn upload-file'
+            "class": 'button upload-file'
           }, "upload file");
         });
         return ul({
@@ -685,6 +807,7 @@
           });
           v.render().open(this.$('.thumbnails'));
         }
+        this.delegateEvents();
         return this;
       };
 
@@ -832,10 +955,5 @@
     });
     return Views = {};
   });
-
-}).call(this);
-(function() {
-
-  console.log('home');
 
 }).call(this);

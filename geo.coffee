@@ -2,15 +2,8 @@ cluster = require 'cluster'
 numCPUs = require('os').cpus().length
 http = require 'http'
 
-if cluster.isMaster
-  
-  for i in [1..numCPUs]
-    cluster.fork()
 
-  cluster.on 'exit', (worker)->
-    console.log('worker ' + worker.process.pid + ' died')
-else
-
+spin = ->
   # express web server
   app = require './web/web'
 
@@ -21,6 +14,24 @@ else
   api = require('./api/api')(server)
 
 
-  server.listen 1999
+  server.listen 8080
 
-  console.log 'running on port 1999!'
+  console.log 'running on port 8080!'
+
+
+spin()
+###
+
+if cluster.isMaster
+  
+  for i in [1..numCPUs]
+    cluster.fork()
+
+  cluster.on 'exit', (worker)->
+    console.log('worker ' + worker.process.pid + ' died')
+else
+  spin()
+
+###
+
+  

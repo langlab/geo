@@ -41,6 +41,10 @@ module.exports =
     NAME: 'lingualab'
     PORT: 27017
 
+  DC:
+    KEY: 'b1c1e826-0e69-4fc5-b8c6-1205f6b23118'
+    API_URL: 'https://www.dailycred.com/user/api'
+
 
   SIO: @API 
 
@@ -49,6 +53,13 @@ module.exports =
 
     CLIENT_DATA =
       INFO: @INFO
+      S3:
+        MEDIA_BUCKET: @S3.MEDIA_BUCKET
+        URL_ROOT: @S3.URL_ROOT
+      FILEPICKER:
+        KEY: 'Ag4e6fVtyRNWgXY2t3Dccz'
+
+      DC: @DC
 
 
 

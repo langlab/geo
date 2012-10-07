@@ -1,9 +1,3 @@
-window.CFG =
-  S3:
-    KEY: 'AKIAIUJTVW7ZLSILOJRA'
-    SECRET: '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'
-    MEDIA_BUCKET: 'geolab-media'
-    URL_ROOT: 'https://s3.amazonaws.com/'
 
 module "App.Media", (exports,glo)->
 
@@ -72,6 +66,7 @@ module "App.Media", (exports,glo)->
     initialize: (@options)->
       _.extend @, @options
       @data.media = new Collection
+      @views.list = new Views.List collection: @data.media
 
     routes:
       'media':'list'
@@ -80,7 +75,7 @@ module "App.Media", (exports,glo)->
 
     list: ->
       @clearViews()
-      @views.list = new Views.List collection: @data.media
+      
       @data.media.fetch {
         success: => @views.list.open()
       }
@@ -164,8 +159,8 @@ module "App.Media", (exports,glo)->
 
 
     template: ->
-      div class:'btn-group', ->
-        button class:'btn upload-file', "upload file"
+      div class:'button-group', ->
+        button class:'button upload-file', "upload file"
 
       ul class:'thumbnails', ->
         
@@ -178,6 +173,7 @@ module "App.Media", (exports,glo)->
         v = new Views.IconItem model: media
         v.render().open @$('.thumbnails')
 
+      @delegateEvents()
       @
 
   class Views.Detail extends BB.View

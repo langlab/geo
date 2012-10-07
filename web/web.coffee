@@ -15,7 +15,6 @@ app.configure ->
   app.use express.session {
     secret: 'keyboardCat'
     key: 'sessionId'
-    cookie: { domain: '.langlab.org' }
     store: store
   }
   app.use express.bodyParser()
@@ -32,7 +31,15 @@ app.get '/user', (req,res)->
   }
 
 app.get '/', (req,res)->
-  res.send ck.render templates.main, { req: req, res: res }
+  res.send ck.render templates.main, { req: req, res: res, CFG: CFG }
+
+app.get '/login', (req,res)->
+  res.json req.query
+  #res.redirect '/'
+
+app.get '/logout', (req,res)->
+  req.session.auth = false
+  res.redirect '/'
 
 # serving assets
 serveFile = (path,res)->

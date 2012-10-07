@@ -4,19 +4,23 @@ module "App", (exports, glo)->
   BB = glo.BB
   
   class Model
-    name: 'LangLab'
+    name: 'Lab'
 
     constructor: ->
+      window.filepicker?.setKey(w.CFG.FILEPICKER.KEY)
 
       @data =
+        user: new App.User.Model
         media: new App.Media.Collection
 
       @views =
         home: new Home
+        welcome: new App.Welcome.Views.Main
 
       @routers =
         main: new Router { data: @data, views: @views }
         media: new App.Media.Router { data: @data, views: @views }
+        welcome: new App.Welcome.Router { data: @data, views: @views }
 
       @socketConnect()
 
@@ -30,13 +34,19 @@ module "App", (exports, glo)->
       #@connectionView = new App.Connection.Views.Main { model: @connection }
       @
 
+
+
+
   class Router extends BB.Router
 
     routes:
       '': 'home'
 
-    home: -> 
-      @views.home.render().open()
+    home: ->
+      if @data.user.isLoggedIn()
+        @views.home.render().open()
+      else
+        @views.welcome.render().open()
 
 
   Views = {}
@@ -53,6 +63,7 @@ module "App", (exports, glo)->
 
   _.extend exports, {
     Model: Model
+    User: User
     Router: Router
     Views: Views
   }

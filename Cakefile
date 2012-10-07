@@ -7,8 +7,10 @@ async = require 'async'
 _ = require 'underscore'
 util = require 'util'
 
+modules = {
+  app: ['all','app','welcome','home','media']
+}
 
-modules = ['app','ui','welcome','home','media']
 
 vendor = (cb)->
   bundle './web/vendor/*.js', './web/pub/vendor.min.js', cb
@@ -16,23 +18,18 @@ vendor = (cb)->
 style = (cb)->
   compile './web/src/index.styl', './web/pub/index.css', cb
 
-app = (cb)->
-
+module = (name,cb)->
   script = ""
-  saveScriptWhenDone = _.after (modules.length-1), ->
-    # put the app js at the end
-    fs.writeFileSync './web/pub/app.js', script, 'utf8'
-    minify './web/pub/app.js', './web/pub/app.min.js', cb
 
-  for module in modules
-    bundle "./web/src/#{module}/*.coffee", '', (output)->
+  saveScriptWhenDone = _.after (modules[name].length-1), ->
+    fs.writeFileSync "./web/pub/#{name}.js", script, 'utf8'
+    if cb then cb()
+    # minify "./web/pub/app.js", "./web/pub/app.min.js", cb
+
+  for app in modules[name]
+    bundle "./web/src/#{app}/*.coffee", '', (output)->
       script += output
       saveScriptWhenDone()
-
-assets = (cb)->
-  for module in modules
-    spawn 'cp', ["./web/src/#{module}/assets/*",'./web/pub/assets/']
-    spawn.on 'exit', cb()
 
 commit = (msg)->
   msg ?= "small changes"
@@ -42,10 +39,10 @@ commit = (msg)->
   dep.on 'exit', -> console.log 'done.'
 
 
+
 task 'build:vendor', "bundle and minify the vendor javascript", vendor
 task 'build:style', "compile all css into one file", style
-task 'build:app', "bundle and minify all app module javascript into one file", app
-task 'build:assets', "copy all module images and fonts over to the public directory", assets
+task 'build:module', "bundle and minify all app module javascript into one file", module 'app'
 
 option '-m', '--message [MESSAGE]', 'commit and push with message'
 task 'commit', "commit changes and push", (options)-> 
@@ -55,16 +52,11 @@ task 'commit', "commit changes and push", (options)->
 
 task "dev", ->
 
-  vendor style app commit
+  vendor -> style -> module 'app'
 
-  watch './web/src', -> vendor style app commit
+  watch './web/vendor/', -> vendor
+  watch './web/src/', -> style -> module 'app'
 
-  watch './geo.coffee', -> commit
-  watch './web/web.coffee', -> commit
-  watch './api/', -> commit
-
-
-  
 
 
 
